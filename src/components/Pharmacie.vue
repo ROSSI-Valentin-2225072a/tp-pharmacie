@@ -1,29 +1,58 @@
 <script setup>
-import {onMounted, onUpdated, reactive, watch} from "vue";
-import { Medicament } from "@/Medicament.js";
-import PharmacieItem from "@/components/PharmacieItem.vue";
+import {onMounted, reactive, ref} from "vue";
 import PharmacieForm from "@/components/PharmacieForm.vue";
-
-const listeMedicaments = reactive([]);
+import PharmacieSearch from "@/components/PharmacieSearch.vue";
+import {Medicament} from "@/Medicament.js";
+import PharmacieItem from "@/components/PharmacieItem.vue";
 
 const url = "https://apipharmacie.pecatte.fr/api/28/medicaments"
+const listeMedicaments = reactive([]);
+const listeMedicamentsRecherches = reactive([]);
+const rechercheDenomination = ref("");
+
+function handlerEnregistrer(medicament) {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(medicament),
+  };
+
+  fetch(url, fetchOptions)
+      .then((response) => response.json())
+      .then((dataJSON) => {
+        // console.log(dataJSON);
+        getAllMedicament();
+        getMedicaments();
+      })
+      .catch((error) => {
+        console.error("Erreur lors de l'enregistrement du médicament", error);
+      });
+}
+
+function handlerRecherche(recherche) {
+  rechercheDenomination.value = recherche;
+  getMedicaments();
+}
 
 function getMedicaments() {
   const fetchOptions = { method: "GET" };
 
-  fetch(url, fetchOptions)
-    .then((response) => response.json())
-    .then((dataJSON) => {
-      const results = dataJSON;
-      //console.log(dataJSON);
-      listeMedicaments.splice(0, listeMedicaments.length);
-      results.map((medicament) => {
-        listeMedicaments.push(new Medicament(medicament));
+  fetch(url + "?search=" + rechercheDenomination.value, fetchOptions)
+      .then((response) => response.json())
+      .then((dataJSON) => {
+        const results = dataJSON;
+        console.log(url + "?search=" + rechercheDenomination.value)
+        console.log(dataJSON);
+        listeMedicamentsRecherches.splice(0, listeMedicamentsRecherches.length);
+        results.map((medicament) => {
+          listeMedicamentsRecherches.push(new Medicament(medicament));
+        });
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération des médicaments", error);
       });
-    })
-    .catch((error) => {
-      console.error("Erreur lors de la récupération des médicaments", error);
-    });
 }
 
 function handlerSupprimer(medicament) {
@@ -32,14 +61,15 @@ function handlerSupprimer(medicament) {
   };
 
   fetch(url + `/${medicament.id}`, fetchOptions)
-    .then((response) => response.json())
-    .then((dataJSON) => {
-      //console.log(dataJSON);
-      getMedicaments();
-    })
-    .catch((error) => {
-      console.error("Erreur lors de la suppression du médicament", error);
-    });
+      .then((response) => response.json())
+      .then((dataJSON) => {
+        //console.log(dataJSON);
+        getAllMedicament();
+        getMedicaments();
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la suppression du médicament", error);
+      });
 }
 
 function handlerModifier(medicament) {
@@ -52,15 +82,16 @@ function handlerModifier(medicament) {
   };
 
   fetch(url, fetchOptions)
-    .then((response) => response.json())
-    .then((dataJSON) => {
-      //console.log(dataJSON);
-      //console.log(medicament)
-      getMedicaments();
-    })
-    .catch((error) => {
-      console.error("Erreur lors de la modification du médicament", error);
-    });
+      .then((response) => response.json())
+      .then((dataJSON) => {
+        //console.log(dataJSON);
+        //console.log(medicament)
+        getAllMedicament();
+        getMedicaments();
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la modification du médicament", error);
+      });
 }
 
 function handlerAjouter(medicament) {
@@ -78,14 +109,15 @@ function handlerAjouter(medicament) {
   };
 
   fetch(url, fetchOptions)
-    .then((response) => response.json())
-    .then((dataJSON) => {
-      //console.log(dataJSON);
-      getMedicaments();
-    })
-    .catch((error) => {
-      console.error("Erreur lors de l'incrémentation du médicament", error);
-    });
+      .then((response) => response.json())
+      .then((dataJSON) => {
+        //console.log(dataJSON);
+        getAllMedicament();
+        getMedicaments();
+      })
+      .catch((error) => {
+        console.error("Erreur lors de l'incrémentation du médicament", error);
+      });
 }
 
 function handlerEnlever(medicament) {
@@ -106,6 +138,7 @@ function handlerEnlever(medicament) {
       .then((response) => response.json())
       .then((dataJSON) => {
         //console.log(dataJSON);
+        getAllMedicament();
         getMedicaments();
       })
       .catch((error) => {
@@ -113,56 +146,68 @@ function handlerEnlever(medicament) {
       });
 }
 
-function handlerEnregistrer(medicament) {
-  const fetchOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(medicament),
-  };
+
+function getAllMedicament() {
+  const fetchOptions = { method: "GET" };
 
   fetch(url, fetchOptions)
-    .then((response) => response.json())
-    .then((dataJSON) => {
-      // console.log(dataJSON);
-      getMedicaments();
-    })
-    .catch((error) => {
-      console.error("Erreur lors de l'enregistrement du médicament", error);
-    });
+      .then((response) => response.json())
+      .then((dataJSON) => {
+        const results = dataJSON;
+        //console.log(dataJSON);
+        listeMedicaments.splice(0, listeMedicaments.length);
+        results.map((medicament) => {
+          listeMedicaments.push(new Medicament(medicament));
+        });
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération des médicaments", error);
+      });
 }
 
 onMounted(() => {
-  getMedicaments();
+  getAllMedicament();
 });
 
 </script>
 
 <template>
+  <h2 class="styled-header2">Rechercher un médicament</h2>
 
-  <section>
-    <h2 class="styled-header2">Liste des médicaments</h2>
+  <PharmacieSearch @eventRechercher="handlerRecherche"/>
+  <v-container>
+    <v-row dense>
+      <v-col v-for="medicament in listeMedicamentsRecherches" :key="medicament.id">
+        <PharmacieItem
+            :medicament="medicament"
+            @eventSupprimer="handlerSupprimer"
+            @eventModifier="handlerModifier"
+            @eventAjouter="handlerAjouter"
+            @eventEnlever="handlerEnlever"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
 
-    <v-container>
-      <v-row dense>
-        <v-col v-for="medicament in listeMedicaments" :key="medicament.id">
-          <PharmacieItem
-              :medicament="medicament"
-              @eventSupprimer="handlerSupprimer"
-              @eventModifier="handlerModifier"
-              @eventAjouter="handlerAjouter"
-              @eventEnlever="handlerEnlever"
-              />
-        </v-col>
-      </v-row>
-    </v-container>
+  <h2 class="styled-header2">Liste des médicaments</h2>
 
-    <h2 class="styled-header2">Ajouter un médicament</h2>
+  <v-container>
+    <v-row dense>
+      <v-col v-for="medicament in listeMedicaments" :key="medicament.id">
+        <PharmacieItem
+            :medicament="medicament"
+            @eventSupprimer="handlerSupprimer"
+            @eventModifier="handlerModifier"
+            @eventAjouter="handlerAjouter"
+            @eventEnlever="handlerEnlever"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
 
-    <PharmacieForm @eventEnregistrer="handlerEnregistrer"/>
-  </section>
+  <h2 class="styled-header2">Ajouter un médicament</h2>
 
+  <PharmacieForm @eventEnregistrer="handlerEnregistrer"/>
 </template>
 
 <style scoped>
