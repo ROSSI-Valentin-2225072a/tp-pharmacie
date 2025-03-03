@@ -36,25 +36,6 @@ function handlerRecherche(recherche) {
   getMedicaments();
 }
 
-function getMedicaments() {
-  const fetchOptions = { method: "GET" };
-
-  fetch(url + "?search=" + rechercheDenomination.value, fetchOptions)
-      .then((response) => response.json())
-      .then((dataJSON) => {
-        const results = dataJSON;
-        console.log(url + "?search=" + rechercheDenomination.value)
-        console.log(dataJSON);
-        listeMedicamentsRecherches.splice(0, listeMedicamentsRecherches.length);
-        results.map((medicament) => {
-          listeMedicamentsRecherches.push(new Medicament(medicament));
-        });
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la récupération des médicaments", error);
-      });
-}
-
 function handlerSupprimer(medicament) {
   const fetchOptions = {
     method: "DELETE",
@@ -158,6 +139,25 @@ function getAllMedicament() {
         listeMedicaments.splice(0, listeMedicaments.length);
         results.map((medicament) => {
           listeMedicaments.push(new Medicament(medicament));
+        });
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération des médicaments", error);
+      });
+}
+
+function getMedicaments() {
+  const fetchOptions = { method: "GET" };
+
+  fetch(url + "?search=" + rechercheDenomination.value, fetchOptions)
+      .then((response) => response.json())
+      .then((dataJSON) => {
+        const results = dataJSON;
+        console.log(url + "?search=" + rechercheDenomination.value)
+        console.log(dataJSON);
+        listeMedicamentsRecherches.splice(0, listeMedicamentsRecherches.length);
+        results.map((medicament) => {
+          listeMedicamentsRecherches.push(new Medicament(medicament));
         });
       })
       .catch((error) => {
