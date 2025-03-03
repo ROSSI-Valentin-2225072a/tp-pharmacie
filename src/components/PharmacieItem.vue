@@ -52,9 +52,9 @@
   <v-card v-if="!modification">
     <v-card-title>{{ medicament.denomination }}</v-card-title>
     <v-card-text>
+      <v-img :src="'https://apipharmacie.pecatte.fr/images/' + medicament.photo" alt="Image du médicament" height="200px" />
       <p>{{ medicament.formepharmaceutique }}</p>
       <p>{{ medicament.qte }} </p>
-      <v-img :src="medicament.photo" alt="Image du médicament" />
     </v-card-text>
     <v-card-actions>
       <v-btn @click="$emit('eventSupprimer', medicament)">Supprimer</v-btn>
@@ -89,6 +89,7 @@
   border-radius: 12px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  max-width: 400px;
 }
 
 .v-card-title {
@@ -118,5 +119,22 @@
 .v-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0px 6px 12px rgba(16, 185, 129, 0.3);
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 2px solid #10b981;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input:focus {
+  border-color: #0f9b82;
+  box-shadow: 0px 0px 8px rgba(16, 185, 129, 0.3);
 }
 </style>

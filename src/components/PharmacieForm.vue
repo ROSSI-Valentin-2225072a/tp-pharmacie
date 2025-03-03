@@ -19,19 +19,19 @@ const handleFileUpload = (event) => {
     }
     const reader = new FileReader();
     reader.onload = () => {
-      photo.value = reader.result.split(",")[1];
+      photoMed.value = reader.result.split(",")[1];
     };
     reader.readAsDataURL(file);
   }
 };
 
 const enregistrerMedicament = () => {
-  const newMedicament = new Medicament({
+  const newMedicament = {
     denomination: denominationMed.value,
     formepharmaceutique: formepharmaceutiqueMed.value,
     qte: qteMed.value,
     photo: photoMed.value,
-  });
+  };
   emit("eventEnregistrer", newMedicament);
 }
 

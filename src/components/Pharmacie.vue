@@ -125,7 +125,7 @@ function handlerEnregistrer(medicament) {
   fetch(url, fetchOptions)
     .then((response) => response.json())
     .then((dataJSON) => {
-      //console.log(dataJSON);
+      // console.log(dataJSON);
       getMedicaments();
     })
     .catch((error) => {
@@ -170,7 +170,7 @@ onMounted(() => {
   font-size: 1.8rem;
   font-weight: bold;
   text-align: center;
-  color: #2c7a7b; /* Vert doux */
+  color: #2c7a7b;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 15px;
